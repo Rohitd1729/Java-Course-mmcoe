@@ -1,70 +1,113 @@
 package com.project.ipl;
 
-import java.util.Scanner;
+import java.util.Map;
+import java.util.HashMap;
 
 public class IPLSystem {
 
-	public static void main(String[] args) {
+	private Map<Integer, Team> teams;
 
-		Player[] rcbPlayers = {
-				new Player("Virat Kohli", 21),
-				new Player("Phil Salt", 11.5),
-				new Player("Rajat Patidar", 14)
-		};
+	public IPLSystem() {
+		teams = new HashMap<Integer, Team>();
+	}
 
-		Player[] miPlayers = {
-				new Player("Rohit Sharma", 16),
-				new Player("Jasprit Bumrah", 18),
-				new Player("Suryakumar Yadav", 17)
-		};
+	// Add Team
+	public void addTeam(Team team) {
+		teams.put(team.getTeamId(), team);
+		System.out.println("Team Added Successfully");
+	}
 
-		Player[] cskPlayers = {
-				new Player("MS Dhoni", 12),
-				new Player("Ruturaj Gaikwad", 14),
-				new Player("Ravindra Jadeja", 16)
-		};
+	// Search Team
+	public Team searchTeam(int teamId)
+			throws TeamNotFoundException {
 
-		Player[] kkrPlayers = {
-				new Player("Ajinkya Rahane", 10),
-				new Player("Andre Russell", 15),
-				new Player("Sunil Narine", 14)
-		};
+		Team team = teams.get(teamId);
 
-		Player[] srhPlayers = {
-				new Player("Pat Cummins", 18),
-				new Player("Travis Head", 15),
-				new Player("Abhishek Sharma", 12)
-		};
+		if (team == null) {
+			throw new TeamNotFoundException(
+					"Team ID " + teamId + " Not Found");
+		}
 
-		Team[] teams = {
-				new Team("RCB", rcbPlayers),
-				new Team("MI", miPlayers),
-				new Team("CSK", cskPlayers),
-				new Team("KKR", kkrPlayers),
-				new Team("SRH", srhPlayers)
-		};
+		return team;
+	}
 
-		Scanner sc = new Scanner(System.in);
+	// Delete Team
+	public void deleteTeam(int teamId)
+			throws TeamNotFoundException {
 
-		System.out.print("Enter Team Name : ");
-		String searchTeam = sc.nextLine();
+		if (!teams.containsKey(teamId)) {
+			throw new TeamNotFoundException(
+					"Team ID " + teamId + " Not Found");
+		}
 
-		boolean found = false;
+		teams.remove(teamId);
 
-		for (Team team : teams) {
+		System.out.println("Team Deleted Successfully");
+	}
 
-			if (team.getTeamName().equalsIgnoreCase(searchTeam)) {
+	// List Teams
+	public void listTeams() {
 
-				team.displayPlayers();
-				found = true;
-				break;
+		if (teams.isEmpty()) {
+			System.out.println("No Teams Available");
+			return;
+		}
+
+		for (Team team : teams.values()) {
+			System.out.println(team);
+		}
+	}
+
+	// Add Player
+	public void addPlayer(int teamId, Player player)
+			throws TeamNotFoundException {
+
+		Team team = searchTeam(teamId);
+
+		team.addPlayer(player);
+
+		System.out.println("Player Added Successfully");
+	}
+
+	// Search Player
+	public Player searchPlayer(int teamId, int playerId)
+			throws TeamNotFoundException,
+			PlayerNotFoundException {
+
+		Team team = searchTeam(teamId);
+
+		for (Player p : team.getPlayers()) {
+
+			if (p.getPlayerId() == playerId) {
+				return p;
 			}
 		}
 
-		if (!found) {
-			System.out.println("Team not found!");
-		}
+		throw new PlayerNotFoundException(
+				"Player ID " + playerId + " Not Found");
+	}
 
-		sc.close();
+	// Delete Player
+	public void deletePlayer(int teamId, int playerId)
+			throws TeamNotFoundException,
+			PlayerNotFoundException {
+
+		Team team = searchTeam(teamId);
+
+		Player player = searchPlayer(teamId, playerId);
+
+		team.getPlayers().remove(player);
+
+		System.out.println("Player Deleted Successfully");
+	}
+
+	// List Players
+	public void listPlayers(int teamId)
+			throws TeamNotFoundException {
+
+		Team team = searchTeam(teamId);
+
+		team.listPlayers();
 	}
 }
+

@@ -1,26 +1,75 @@
 package com.project.ipl;
 
+import java.util.LinkedList;
+
 public class Team {
 
+	private int teamId;
 	private String teamName;
-	private Player[] players;
+	private double budget;
 
-	public Team(String teamName, Player[] players) {
+	private LinkedList<Player> players;
+
+	public Team(int teamId, String teamName, double budget) {
+
+		this.teamId = teamId;
 		this.teamName = teamName;
-		this.players = players;
+		this.budget = budget;
+
+		players = new LinkedList<Player>();
+	}
+
+	public int getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(int teamId) {
+		this.teamId = teamId;
 	}
 
 	public String getTeamName() {
 		return teamName;
 	}
 
-	public void displayPlayers() {
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
 
-		System.out.println("\nTeam : " + teamName);
-		System.out.println("---------------------------");
+	public double getBudget() {
+		return budget;
+	}
 
-		for (Player player : players) {
-			System.out.println(player);
+	public void setBudget(double budget) {
+		this.budget = budget;
+	}
+
+	public LinkedList<Player> getPlayers() {
+		return players;
+	}
+
+	// Add Player
+	public void addPlayer(Player p) {
+		players.add(p);
+	}
+
+	// List Players
+	public void listPlayers() {
+
+		if(players.isEmpty()) {
+			System.out.println("No Players Found");
+			return;
 		}
+
+		for(Player p : players) {
+			System.out.println(p);
+		}
+	}
+
+	@Override
+	public String toString() {
+
+		return "Team ID : " + teamId +
+			   ", Team Name : " + teamName +
+			   ", Budget : ₹" + budget + " Cr";
 	}
 }
