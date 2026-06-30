@@ -21,12 +21,8 @@ public class BookDaoCollectionImpl implements BookDao {
 
 	@Override
 	public Book find(int isbn) {
-		for(Book b : books) {
-			if(b.getIsbn() == isbn) {
-				return b;
-			}
-		}
-		return null;
+		
+		return books.stream().filter(b->b.getIsbn()== isbn).findFirst().orElse(null);
 	}
 
 	@Override
@@ -37,23 +33,12 @@ public class BookDaoCollectionImpl implements BookDao {
 
 	@Override
 	public boolean delete(int isbn) {
-		Book b = find (isbn);
-		if (b != null) {
-			 books.remove(b);
-			 return true;
-		}
-		return false;
+		return books.removeIf(b->b.getIsbn()==isbn);
 	}
 
 	@Override
 	public List<Book> findByPrice(double min, double max) {
-		List<Book> result = new Vector<Book>();
-		for (Book b : books) {
-			if(b.getPrice()>= min && b.getPrice()<=max){
-				result.add(b);
-			}
-		}
-		return result;
+		return books.stream().filter(b->b.getPrice()>=min && b.getPrice()<=max).toList();
 	}
 
 }

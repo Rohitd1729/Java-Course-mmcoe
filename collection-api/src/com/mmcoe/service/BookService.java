@@ -16,6 +16,8 @@ public interface BookService {
 	
 	
 	List<Book>findByPrice(double min, double max);
+	
+	List<Book>listOrderByTitle();
 }
  
 

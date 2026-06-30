@@ -46,6 +46,9 @@ public class TestBookService {
 		for(Book b : service.list()) {
 			System.out.println(b);
 		}
+		System.out.println("\n===== Order of Books by Title =====");
+		service.listOrderByTitle().forEach(System.out::println);
+		
 	}
 }
 
