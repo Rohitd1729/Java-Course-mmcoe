@@ -8,7 +8,7 @@ import com.mmcoe.pojo.Book;
 public class BookDaoCollectionImpl implements BookDao {
 	private List<Book> books;
 	
-	
+				
 	public BookDaoCollectionImpl() {
 		books = new Vector<Book>();
 	}
