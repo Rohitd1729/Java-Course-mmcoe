@@ -6,7 +6,11 @@ import com.ipl.model.Player;
 
 public interface PlayerRepository {
 
-    List<Player> loadPlayers();
+    List<Player> findAll();
 
-    void savePlayers(List<Player> players);
+    void save(Player player);
+
+    void update(Player player);
+
+    void delete(int playerId);
 }

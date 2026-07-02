@@ -8,9 +8,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ipl.model.Player;
-import com.ipl.repository.CSVPlayerRepository;
+import com.ipl.repository.MySQLPlayerRepository;
 import com.ipl.repository.PlayerRepository;
+
+
 public class IPLService {
+	
 	private PlayerRepository repository;
 
     private List<Player> players;
@@ -18,10 +21,10 @@ public class IPLService {
     public IPLService() {
 
         repository =
-                new CSVPlayerRepository();
+                new MySQLPlayerRepository();
 
         players =
-                repository.loadPlayers();
+                repository.findAll();
 
         System.out.println(
                 players.size()
@@ -147,8 +150,9 @@ public class IPLService {
     }
     public void addPlayer(Player player) {
 
+        repository.save(player);
+
         players.add(player);
-        repository.savePlayers(players);
 
         System.out.println(
                 "Player Added Successfully");
@@ -160,7 +164,7 @@ public class IPLService {
                 searchPlayerById(playerId);
 
         players.remove(p);
-        repository.savePlayers(players);
+        repository.delete(playerId);
 
         System.out.println(
                 "Player Deleted");
@@ -260,7 +264,7 @@ public class IPLService {
 				p.setRole(role);
 				p.setBidAmount(bidAmount);
 			
-				repository.savePlayers(players);
+				repository.update(p);
 			return true;
 	}
 	}
