@@ -1,5 +1,5 @@
-package com.ipl.model;
-
+package com.ipl.main;
+import com.ipl.exception.PlayerNotFoundException;
 import java.util.Scanner;
 
 import com.ipl.model.Player;
@@ -35,7 +35,8 @@ public class IPLMain {
 			System.out.println("14. Display Team Members");
 			System.out.println("15. Team Wise Player Count");
 			System.out.println("16. Team Wise Average Bid");
-			System.out.println("17. Exit");
+			System.out.println("17. Update Player");
+			System.out.println("18. Exit");
 
 			System.out.print("Enter Choice : ");
 			choice = sc.nextInt();
@@ -51,18 +52,23 @@ public class IPLMain {
 
 			case 2:
 
-				System.out.print("Enter Player ID : ");
-				int id = sc.nextInt();
+			    System.out.print("Enter Player ID : ");
+			    int id = sc.nextInt();
 
-				Player player =
-						service.searchPlayerById(id);
+			    try {
 
-				if (player != null)
-					System.out.println(player);
-				else
-					System.out.println("Player Not Found");
+			        Player player =
+			                service.searchPlayerById(id);
 
-				break;
+			        System.out.println(player);
+
+			    } catch (PlayerNotFoundException e) {
+
+			        System.out.println(
+			                e.getMessage());
+			    }
+
+			    break;
 
 			case 3:
 
@@ -108,7 +114,15 @@ public class IPLMain {
 				System.out.print("Enter Player ID : ");
 				playerId = sc.nextInt();
 
-				service.deletePlayer(playerId);
+				try {
+
+				    service.deletePlayer(playerId);
+
+				} catch(PlayerNotFoundException e) {
+
+				    System.out.println(
+				            e.getMessage());
+				}
 
 				break;
 
@@ -189,8 +203,39 @@ public class IPLMain {
 				service.teamWiseAverageBid();
 
 				break;
+				
+			case 17: {
 
-			case 17:
+			    System.out.print("Enter Player Id : ");
+			    int updateId = sc.nextInt();
+			    sc.nextLine();
+
+			    System.out.print("Enter New Team : ");
+			    String updateTeam = sc.nextLine();
+
+			    System.out.print("Enter New Role : ");
+			    String updateRole = sc.nextLine();
+
+			    System.out.print("Enter New Bid Amount : ");
+			    double updateBid = sc.nextDouble();
+
+			    boolean updated =
+			            service.updatePlayer(
+			                    updateId,
+			                    updateTeam,
+			                    updateRole,
+			                    updateBid);
+
+			    if(updated)
+			        System.out.println(
+			                "Player Updated Successfully");
+			    else
+			        System.out.println(
+			                "Player Not Found");
+
+			    break;
+			}
+			case 18:
 
 				System.out.println("Thank You");
 				break;
@@ -200,7 +245,7 @@ public class IPLMain {
 				System.out.println("Invalid Choice");
 			}
 
-		} while (choice != 17);
+		} while (choice != 18);
 
 		sc.close();
 	}

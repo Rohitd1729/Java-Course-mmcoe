@@ -38,6 +38,18 @@ public class Player {
     public double getBidAmount() {
         return bidAmount;
     }
+    
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setBidAmount(double bidAmount) {
+        this.bidAmount = bidAmount;
+    }
 
     @Override
     public String toString() {

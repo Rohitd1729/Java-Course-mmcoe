@@ -1,65 +1,48 @@
 package com.ipl.service;
+import com.ipl.exception.PlayerNotFoundException;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ipl.model.Player;
-
+import com.ipl.repository.CSVPlayerRepository;
+import com.ipl.repository.PlayerRepository;
 public class IPLService {
+	private PlayerRepository repository;
 
     private List<Player> players;
 
     public IPLService() {
-        loadPlayers();
+
+        repository =
+                new CSVPlayerRepository();
+
+        players =
+                repository.loadPlayers();
+
+        System.out.println(
+                players.size()
+                + " Players Loaded Successfully");
     }
-
-    private void loadPlayers() {
-
-        try {
-
-            players = Files.lines(Paths.get("players.csv"))
-
-                    .skip(1)
-
-                    .map(line -> line.split(","))
-
-                    .map(data -> new Player(
-                            Integer.parseInt(data[0]),
-                            data[1],
-                            data[2],
-                            data[3],
-                            Double.parseDouble(data[4])))
-
-                    .collect(Collectors.toList());
-
-            System.out.println(players.size()
-                    + " Players Loaded Successfully");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    
+    
+    
+    
 
     public void displayAllPlayers() {
 
         players.forEach(System.out::println);
     }
 
-    public Player searchPlayerById(int id) {
+    public Player searchPlayerById(int id)
+            throws PlayerNotFoundException {
 
-        return players.stream()
-
-                .filter(p ->
-                        p.getPlayerId() == id)
-
-                .findFirst()
-
-                .orElse(null);
+        return players.stream().filter(p -> p.getPlayerId() == id).findFirst().orElseThrow(() ->new PlayerNotFoundException("Player with ID "
+                                + id
+                                + " not found"));
     }
 
     public void displayBatsmen() {
@@ -100,7 +83,7 @@ public class IPLService {
 
                 .sorted(
                         Comparator.comparingDouble(
-                                Player::getBidAmount))
+                                Player::getBidAmount).reversed())
 
                 .forEach(System.out::println);
     }
@@ -165,19 +148,22 @@ public class IPLService {
     public void addPlayer(Player player) {
 
         players.add(player);
+        repository.savePlayers(players);
 
         System.out.println(
                 "Player Added Successfully");
     }
-    public void deletePlayer(int playerId) {
+    public void deletePlayer(int playerId)
+            throws PlayerNotFoundException {
 
-        boolean removed = players.removeIf(
-                p -> p.getPlayerId() == playerId);
+        Player p =
+                searchPlayerById(playerId);
 
-        if (removed)
-            System.out.println("Player Deleted");
-        else
-            System.out.println("Player Not Found");
+        players.remove(p);
+        repository.savePlayers(players);
+
+        System.out.println(
+                "Player Deleted");
     }
     public void filterByTeam(String team) {
 
@@ -241,11 +227,7 @@ public class IPLService {
                 .sorted(
                         Comparator.comparingDouble(
                                 Player::getBidAmount)
-                                .reversed())
-
-                .limit(5)
-
-                .forEach(System.out::println);
+                                .reversed()).limit(5).forEach(System.out::println);
     }
     public void teamWisePlayers() {
 
@@ -264,4 +246,25 @@ public class IPLService {
                             System.out::println);
                 });
     }
+    
+    public boolean updatePlayer(int playerId,
+            String teamName,
+            String role,
+            double bidAmount) {
+			
+			for(Player p : players) {
+			
+			if(p.getPlayerId() == playerId) {
+			
+				p.setTeamName(teamName);
+				p.setRole(role);
+				p.setBidAmount(bidAmount);
+			
+				repository.savePlayers(players);
+			return true;
+	}
+	}
+			
+			return false;
+		}
 }
